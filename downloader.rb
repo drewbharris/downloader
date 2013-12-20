@@ -6,9 +6,21 @@ module Downloader
         '/' => proc {|env| Downloader.root(env)},
         '/admin/stats' => proc {|env| Downloader.stats(env)},
         '/admin/upload' => proc {|env| Downloader.upload(env)},
+        '/public' => proc {|env| Rack::File.new(env['PATH_INFO']).call(env)}
     }
 
     TEMPLATE_DIR = './templates'
+
+    def self.public(env)
+        file_name = env['PATH_INFO'].split('/public')[-1]
+        path = "#{PUBLIC_DIR}/#{file_name}"
+
+        if File.exists?(path)
+            return [200, {'Content-Type' => 'text/plain'}, [File.read(path)]]
+        else
+            not_found
+        end
+    end
 
     def self.stats(env)
 
@@ -31,12 +43,12 @@ module Downloader
     end
 
     def self.root(env)
-        file_name = env['PATH_INFO'].split("/")[-1]
+        file_name = env['PATH_INFO'].split('/')[-1]
 
-        return [200, {'Content-Type' => 'text/plain'}, [body]]
+        return [200, {'Content-Type' => 'text/plain'}, [""]]
     end
 
-    def self.not_found(env)
+    def self.not_found
         return [404, {'Content-Type' => 'text/plain'}, ["not found"]]
     end
 
