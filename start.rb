@@ -9,6 +9,8 @@ require 'rack/handler'
 LOGFILE = "rack.log"
 PORT = 9292
 
+Rack::Handler::Puma = Rack::Handler.get(:puma)
+
 controller = Rack::URLMap.new(Controller::URL_MAP)
 builder = Rack::Builder.new do
 	use(Rack::Uploads)
@@ -28,7 +30,4 @@ builder = Rack::Builder.new do
 	run(controller)
 end
 
-
-Rack::Handler::WEBrick = Rack::Handler.get(:puma)
-
-Rack::Handler::WEBrick.run(builder, :Port => PORT)
+Rack::Handler::Puma.run(builder, :Port => PORT)
