@@ -4,10 +4,13 @@ require './lib/downloader'
 
 module Controller
     URL_MAP = {
-        '/' => proc {|env| Downloader.download(env)},
-        '/admin/stats' => proc {|env| Downloader.stats(env)},
-        '/admin/upload' => proc {|env| Downloader.upload(env)}
+        '/' => proc {|env| Controller.root(env)},
+        '/admin/stats' => proc {|env| Controller.stats(env)},
+        '/admin/upload' => proc {|env| Controller.upload(env)}
     }
+
+    NGINX_PORT = 9293
+    NGINX_ROOT = '/usr/local/var/www'
 
     def self.stats(env)
         params = {
@@ -23,20 +26,15 @@ module Controller
 
         }
 
+        # put uploaded file in NGINX_ROOT/files
+
         body = Template.render(:upload, params)
         return [200, {'Content-Type' => 'text/plain'}, ["stats page"]]
     end
 
-    def self.download(env)
-        file_name = env['PATH_INFO'].split('/')[-1]
+    def self.root(env)
 
-        download_ready = Downloader.process(file_name)
-
-        if !download_ready
-            return [401, {'Content-Type' => content_type}, ["Unauthorized"]]
-        end
-
-        return [302, {'Location' => "nginx_redirect_to_file"}, [""]]
+        return [200, {'Content-Type' => 'text/plain'}, ["root"]]
     end
 
     def self.not_found
