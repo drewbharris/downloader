@@ -6,6 +6,7 @@
 		<input name="file" type="file">
 		<input type="submit" value="Upload">
 	</form>
+	<div id="file"></div>
 	<script type="text/javascript">
 		$("#form").submit(function(e){
 			
@@ -20,6 +21,7 @@
 				success: function(data, textStatus, jqXHR) {
 					console.log("finished, data: ");
 					console.log(data);
+					$("#data").html("<a href='/" +  data.filename +"'>download file</a>")
 				},
 				error: function(jqXHR,textStatus,errorThrown) {
 					console.log("error: " + errorThrown);

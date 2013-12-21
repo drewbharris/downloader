@@ -4,6 +4,7 @@ require 'rack/streaming_proxy'
 require 'rack/uploads'
 require 'logger'
 require './lib/controller'
+require 'rack/handler'
 
 LOGFILE = "rack.log"
 PORT = 9292
@@ -26,5 +27,8 @@ builder = Rack::Builder.new do
 	Logger.new(LOGFILE)
 	run(controller)
 end
+
+
+Rack::Handler::WEBrick = Rack::Handler.get(:puma)
 
 Rack::Handler::WEBrick.run(builder, :Port => PORT)
