@@ -1,14 +1,16 @@
 require 'rack'
 require 'logger'
-require './downloader'
+require './controller'
 
-# static_app = Rack::Static.new(:urls => ["/public/images", "/public/js", "/public/css"], :root => "public")
+LOGFILE = "rack.log"
+PORT = 9292
 
-rack_app = Rack::URLMap.new(Downloader::URL_MAP)
+controller = Rack::URLMap.new(Downloader::URL_MAP)
 builder = Rack::Builder.new do
-  use Rack::CommonLogger
-  Logger.new('rack.log')
-  run rack_app
+	use(Rack::CommonLogger)
+	use(Rack::Static, {:urls => ["/img", "/js", "/css"], :root => "public"})
+	Logger.new(LOGFILE)
+	run(controller)
 end
 
-Rack::Handler::WEBrick.run(builder, :Port => 9292)
+Rack::Handler::WEBrick.run(builder, :Port => PORT)
