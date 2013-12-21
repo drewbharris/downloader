@@ -11,9 +11,6 @@ module Controller
         '/api/v1/upload' => proc {|env| API.upload(env)}
     }
 
-    NGINX_PORT = 9293
-    NGINX_ROOT = '/usr/local/var/www'
-
     def self.stats(env)
         body = Template.render(:stats, {
         })
@@ -41,8 +38,8 @@ end
 module API
     def self.upload(env)
         upload = env['rack.uploads'][0]
-        upload.mv("#{Controller::NGINX_ROOT}/files/#{upload.filename}")
-        File.chmod(0644, "#{Controller::NGINX_ROOT}/files/#{upload.filename}")
+        upload.mv("#{Config::NGINX_ROOT}/files/#{upload.filename}")
+        File.chmod(0644, "#{Config::NGINX_ROOT}/files/#{upload.filename}")
         return [200, {'Content-Type' => 'text/html'}, ["/files/#{upload.filename}"]]
     end
 end

@@ -1,8 +1,9 @@
+require './config'
 require 'rack'
 require 'rack/streaming_proxy'
 require 'rack/uploads'
 require 'logger'
-require './controller'
+require './lib/controller'
 
 LOGFILE = "rack.log"
 PORT = 9292
@@ -13,14 +14,13 @@ builder = Rack::Builder.new do
 	use(Rack::CommonLogger)
 	use(Rack::Static, {:urls => ["/img", "/js", "/css"], :root => "public"})
 	use(Rack::StreamingProxy) do |request|
-		if request.path.start_with?("/files")
-			file_name = request.path.split('/files/')[-1]
+		if !request.path.match(/\/admin(.*)/)
+			file_name = request.path.split('/')[-1]
 
-			# check if the download is allowed, note the download and serve it out to nginx
+			# check if this is a file and if the download is allowed, note the download and serve it out to nginx
 			if Downloader.process(file_name)
-				"http://localhost:#{Controller::NGINX_PORT}/files/#{file_name}"
+				"http://localhost:#{Config::NGINX_PORT}/files/#{file_name}"
 			end
-
 		end
 	end
 	Logger.new(LOGFILE)
