@@ -1,1 +1,30 @@
-this is upload
+
+<head>
+	<script type="text/javascript" src="/js/jquery-2.0.3.min.js"></script>
+	
+</head>
+<body>
+	<form id="form" enctype="multipart/form-data">
+		<input name="file" type="file">
+		<input type="submit" value="Upload">
+	</form>
+	<script type="text/javascript">
+		$("#form").submit(function(e){
+			
+			var formData = new FormData($("#form")[0]);
+
+			$.ajax({
+				url: '/api/v1/upload',
+				data: formData,
+				processData: false,
+				contentType: false,
+				type: 'POST',
+				success: function(data){
+					console.log(data);
+				}
+			});
+			
+			e.preventDefault();
+		});
+	</script>
+</body>

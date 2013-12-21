@@ -8,5 +8,7 @@ module Downloader
 
 		# note the download attempt in the database
 		puts "allowing download of #{file_name}"
+
+		return true
 	end
 end

@@ -1,39 +1,34 @@
 require 'rack'
 require './lib/template'
 require './lib/downloader'
+require 'pp'
 
 module Controller
     URL_MAP = {
-        '/' => proc {|env| Controller.root(env)},
+        '/' => proc {|env| Controller.index(env)},
         '/admin/stats' => proc {|env| Controller.stats(env)},
-        '/admin/upload' => proc {|env| Controller.upload(env)}
+        '/admin/upload' => proc {|env| Controller.upload(env)},
+        '/api/v1/upload' => proc {|env| API.upload(env)}
     }
 
     NGINX_PORT = 9293
     NGINX_ROOT = '/usr/local/var/www'
 
     def self.stats(env)
-        params = {
-
-        }
-
-        body = Template.render(:stats, params)
+        body = Template.render(:stats, {
+        })
         return [200, {'Content-Type' => 'text/plain'}, [body]]
     end
 
     def self.upload(env)
-        params = {
-
-        }
-
-        # put uploaded file in NGINX_ROOT/files
-
-        body = Template.render(:upload, params)
-        return [200, {'Content-Type' => 'text/plain'}, ["stats page"]]
+        body = Template.render(:upload, {
+        })
+        return [200, {'Content-Type' => 'text/html'}, [body]]
     end
 
-    def self.root(env)
-
+    def self.index(env)
+        body = Template.render(:index, {
+        })
         return [200, {'Content-Type' => 'text/plain'}, ["root"]]
     end
 
@@ -41,6 +36,15 @@ module Controller
         return [404, {'Content-Type' => 'text/plain'}, ["not found"]]
     end
 
+end
+
+module API
+    def self.upload(env)
+        upload = env['rack.uploads'][0]
+        upload.mv("#{Controller::NGINX_ROOT}/files/#{upload.filename}")
+        File.chmod(0644, "#{Controller::NGINX_ROOT}/files/#{upload.filename}")
+        return [200, {'Content-Type' => 'text/html'}, ["/files/#{upload.filename}"]]
+    end
 end
 
 
