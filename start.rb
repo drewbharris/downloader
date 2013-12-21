@@ -19,7 +19,7 @@ builder = Rack::Builder.new do
 
 			# check if this is a file and if the download is allowed, note the download and serve it out to nginx
 			if Downloader.process(file_name)
-				"http://localhost:#{Config::NGINX_PORT}/files/#{file_name}"
+				"http://localhost:#{Cfg::NGINX_PORT}/files/#{file_name}"
 			end
 		end
 	end

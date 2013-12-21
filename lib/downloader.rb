@@ -2,7 +2,7 @@ module Downloader
 
 	def self.process(file_name)
 		# check that the file exists
-		return false if !File.exists?("#{Config::NGINX_ROOT}/files/#{file_name}")
+		return false if !File.exists?("#{Cfg::NGINX_PATH}/files/#{file_name}")
 
 		# check for access if validation is required
 

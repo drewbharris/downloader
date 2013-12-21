@@ -1,4 +1,5 @@
 require 'rack'
+require 'json'
 require './lib/template'
 require './lib/downloader'
 require 'pp'
@@ -32,15 +33,18 @@ module Controller
     def self.not_found
         return [404, {'Content-Type' => 'text/plain'}, ["not found"]]
     end
-
 end
 
 module API
     def self.upload(env)
         upload = env['rack.uploads'][0]
-        upload.mv("#{Config::NGINX_ROOT}/files/#{upload.filename}")
-        File.chmod(0644, "#{Config::NGINX_ROOT}/files/#{upload.filename}")
-        return [200, {'Content-Type' => 'text/html'}, ["/files/#{upload.filename}"]]
+
+        filename = upload.filename.gsub(' ', '_')
+        upload.mv("#{Cfg::NGINX_PATH}/files/#{filename}")
+        File.chmod(0644, "#{Cfg::NGINX_PATH}/files/#{filename}")
+        return [200, {'Content-Type' => 'application/json'}, [{
+            'filename' => "#{filename}"
+        }.to_json]]
     end
 end
 
