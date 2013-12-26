@@ -1,7 +1,7 @@
 require 'rack'
 require 'json'
-require './lib/template'
-require './lib/downloader'
+require "#{ENV['DOWNLOADER_DIR']}/lib/template"
+require "#{ENV['DOWNLOADER_DIR']}/lib/downloader"
 require 'pp'
 
 module Controller

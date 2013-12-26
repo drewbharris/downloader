@@ -1,9 +1,9 @@
-require './config'
+require "#{ENV['DOWNLOADER_DIR']}/config"
 require 'rack'
 require 'rack/streaming_proxy'
 require 'rack/uploads'
 require 'logger'
-require './lib/controller'
+require "#{ENV['DOWNLOADER_DIR']}/lib/controller"
 require 'rack/handler'
 
 LOGFILE = "rack.log"
