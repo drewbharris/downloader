@@ -25,6 +25,15 @@ module Controller
     end
 
     def self.index(env)
+
+        request = Rack::Request.new(env)
+
+        if request.params['error'] == 'not_found'
+            not_found
+        end
+
+        pp request.params
+
         body = Template.render(:index, {
         })
         return [200, {'Content-Type' => 'text/plain'}, ["root"]]
